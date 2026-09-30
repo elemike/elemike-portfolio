@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     title: 'Michael Cruz | Full Stack Developer',
     description:
       'Portafolio profesional de Michael Cruz. Desarrollo web full stack, arquitectura de software e integración de soluciones digitales.',
-    url: 'https://michaelcruz.dev',
+    url: 'https://elemike.vercel.app/',
     images: [
       {
         url: '/og-image.png',
