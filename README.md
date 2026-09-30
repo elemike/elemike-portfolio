@@ -1,5 +1,7 @@
 <div align="center">
 
+![Portada del portafolio de Michael Cruz](./docs/screenshots/portada.png)
+
 # Michael Cruz — Portafolio
 
 **Full Stack Developer · Bogotá, Colombia**
@@ -18,16 +20,43 @@ Portafolio profesional donde presento mis proyectos, habilidades y servicios en 
 
 ---
 
+## 📸 Capturas
+
+<div align="center">
+
+![Hero del portafolio](./docs/screenshots/hero.png)
+
+</div>
+
+<details>
+<summary><b>Ver más capturas</b></summary>
+<br />
+
+| Sobre mí | Proyectos destacados |
+| --- | --- |
+| ![Sobre mí](./docs/screenshots/about.png) | ![Proyectos](./docs/screenshots/projects.png) |
+
+| Detalle de proyecto | Tecnologías |
+| --- | --- |
+| ![Detalle de proyecto](./docs/screenshots/In_projects.png) | ![Tecnologías](./docs/screenshots/Tech.png) |
+
+| Servicios | Contacto y footer |
+| --- | --- |
+| ![Servicios](./docs/screenshots/Services.png) | ![Footer](./docs/screenshots/Footer.png) |
+
+</details>
+
+---
+
 ## 🚧 Estado del proyecto
 
 El portafolio se encuentra en **desarrollo activo**.
 
 - [x] Home page (hero, sobre mí, proyectos destacados, habilidades, servicios y contacto)
 - [x] Despliegue continuo en Vercel
-- [x] Optimización de SEO y métricas Lighthouse
 - [ ] Páginas de casos de estudio (DeskHub, Restaurante La Ruda, Monitoreo de Cultivos)
 - [ ] Página de "Sobre mí" ampliada
-- [ ] Página de "Servicios" ampliada
+- [ ] Optimización de SEO y métricas Lighthouse
 
 ## ✨ Secciones del sitio
 
@@ -97,6 +126,8 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
 ```text
 elemike-portfolio/
+├── docs/
+│   └── screenshots/     # Capturas usadas en este README
 ├── public/              # Recursos estáticos (imágenes, CV)
 ├── src/                 # Código fuente de la aplicación
 ├── eslint.config.mjs    # Configuración de ESLint
