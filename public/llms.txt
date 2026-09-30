@@ -1,0 +1,27 @@
+# Mike | Desarrollador de Software & Arquitecto Web
+
+> Desarrollador Full Stack especializado en la creación de aplicaciones web empresariales, arquitecturas escalables (Clean Architecture, Microservicios) e inteligencia artificial / visión por computador.
+
+## Sobre mí
+
+- [Portafolio](https://elemike.vercel.app/): Página principal con resumen profesional, experiencia y habilidades técnicas.
+- [Proyectos Destacados](https://elemike.vercel.app/#projects): Sección bento interactiva con demostración de casos de estudio.
+
+## Servicios
+
+- [Desarrollo Web Full Stack](https://elemike.vercel.app/): Diseño y construcción de aplicaciones web modernas, rápidas y escalables con React, Next.js, Angular, TypeScript y Tailwind CSS.
+- [Arquitectura de Software y APIs](https://elemike.vercel.app/): Diseño de sistemas backend robustos e integraciones utilizando Clean Architecture, REST APIs y Microservicios con ASP.NET Core (C#) y NestJS (Node.js).
+- [Soluciones con IA y Visión por Computador](https://elemike.vercel.app/): Desarrollo de modelos de analítica inteligente, procesamiento de imágenes y visión artificial con Python, PyTorch, YOLO y OpenCV.
+- [Optimización de Bases de Datos](https://elemike.vercel.app/): Diseño, modelado y optimización de consultas para bases de datos relacionales con PostgreSQL y SQL Server.
+
+## Proyectos Destacados
+
+- [DeskHub](https://elemike.vercel.app/): Plataforma web para la gestión y reserva de espacios corporativos en tiempo real. Stack: Angular, ASP.NET Core, C#, SQL Server, Clean Architecture.
+- [Restaurante La Ruda](https://elemike.vercel.app/): Sistema de gestión gastronómica integral para automatización de pedidos e inventarios. Stack: React, NestJS, PostgreSQL, TypeScript, REST API.
+- [Monitoreo de Cultivos](https://elemike.vercel.app/): Sistema de analítica agrícola para detección temprana de anomalías mediante visión por computador e IA. Stack: Python, OpenCV, PyTorch, YOLO, GIS.
+
+## Tecnologías y Habilidades
+
+- Frontend: React, Next.js, Angular, TypeScript, Tailwind CSS, GSAP.
+- Backend & BD: Node.js, NestJS, ASP.NET Core (C#), Python, PostgreSQL, SQL Server.
+- Arquitectura & IA: Clean Architecture, Microservicios, REST APIs, Visión por Computador (YOLO, OpenCV).
