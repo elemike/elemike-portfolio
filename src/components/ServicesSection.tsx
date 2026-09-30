@@ -63,6 +63,9 @@ export default function ServicesSection() {
 
   useGSAP(
     () => {
+      // Recalcular posiciones de ScrollTrigger tras renderizar
+      ScrollTrigger.refresh();
+
       // 1. Animación Encabezado
       gsap.from('.services-header', {
         scrollTrigger: {
@@ -74,7 +77,9 @@ export default function ServicesSection() {
         y: 25,
         duration: 0.7,
         ease: 'power3.out',
-        clearProps: 'all',
+        onComplete: () => {
+          gsap.set('.services-header', { clearProps: 'opacity,transform' });
+        },
       });
 
       // 2. Animación de tarjetas e imágenes Parallax
@@ -96,7 +101,9 @@ export default function ServicesSection() {
             y: 20,
             duration: 0.8,
             ease: 'power3.out',
-            clearProps: 'all',
+            onComplete: () => {
+              gsap.set(imageBox, { clearProps: 'opacity,transform' });
+            },
           });
         }
 
@@ -111,7 +118,9 @@ export default function ServicesSection() {
             y: 30,
             duration: 0.8,
             ease: 'power3.out',
-            clearProps: 'all',
+            onComplete: () => {
+              gsap.set(content, { clearProps: 'opacity,transform' });
+            },
           });
         }
 
