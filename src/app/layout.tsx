@@ -27,6 +27,9 @@ export const metadata: Metadata = {
     default: 'Michael Cruz | Full Stack Developer', // Título para la home si no hay subpágina
     template: '%s | Michael Cruz', // Plantilla donde %s se reemplaza por el título de cada página
   },
+  verification: {
+    google: process.env.KEY_GOOGLE_SITE_VERIFICATION, // Reemplaza con tu código real
+  },
   description:
     'Portafolio profesional de Michael Cruz. Especializado en desarrollo web full stack, arquitectura frontend y backend.',
   keywords: [
