@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Roboto, Roboto_Mono } from 'next/font/google';
 import Navbar from '@/components/NavBar';
+import JsonLd from '@/components/JsonLd';
 import './globals.css';
 
 // Configuración de fuentes Roboto
@@ -18,17 +19,18 @@ const robotoMono = Roboto_Mono({
   display: 'swap',
 });
 
-// URL base del sitio (usando variable de entorno o fallback)
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://elemike.vercel.app/';
+// URL base del sitio sin la barra final al final para construir URLs limpia
+const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://elemike.vercel.app';
+const siteUrl = rawSiteUrl.replace(/\/$/, '');
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Michael Cruz | Full Stack Developer', // Título para la home si no hay subpágina
+    default: 'Michael Cruz | Full Stack Developer', // Título para la home
     template: '%s | Michael Cruz', // Plantilla donde %s se reemplaza por el título de cada página
   },
   verification: {
-    google: process.env.KEY_GOOGLE_SITE_VERIFICATION, // Reemplaza con tu código real
+    google: process.env.KEY_GOOGLE_SITE_VERIFICATION || process.env.KEY_GOOGLE_SITE_VERIFICATION,
   },
   description:
     'Portafolio profesional de Michael Cruz. Especializado en desarrollo web full stack, arquitectura frontend y backend.',
@@ -60,7 +62,7 @@ export const metadata: Metadata = {
   // Metadatos para compartir en WhatsApp, LinkedIn, Facebook, etc.
   openGraph: {
     type: 'website',
-    locale: 'es_ES',
+    locale: 'es_CO',
     url: siteUrl,
     title: 'Michael Cruz | Full Stack Developer',
     description:
@@ -68,9 +70,10 @@ export const metadata: Metadata = {
     siteName: 'Michael Cruz Portfolio',
     images: [
       {
-        url: '/og-image.jpg', // Ubica una imagen promocional de 1200x630px en public/og-image.jpg
+        url: `${siteUrl}/og-image.png`,
         width: 1200,
         height: 630,
+        type: 'image/png',
         alt: 'Michael Cruz - Full Stack Developer Portfolio',
       },
     ],
@@ -81,7 +84,7 @@ export const metadata: Metadata = {
     title: 'Michael Cruz | Full Stack Developer',
     description:
       'Portafolio profesional de Michael Cruz. Especializado en desarrollo web full stack, arquitectura frontend y backend.',
-    images: ['/og-image.png'],
+    images: [`${siteUrl}/og-image.png`],
   },
 };
 
@@ -92,6 +95,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${roboto.variable} ${robotoMono.variable}`}>
+      <head>
+        {/* Inyecta los esquemas Schema.org JSON-LD */}
+        <JsonLd />
+      </head>
       <body className="bg-[#FFF8EB] font-sans text-[#0A1128] antialiased">
         {/* NAVBAR GLOBAL */}
         <Navbar />
