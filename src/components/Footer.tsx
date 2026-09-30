@@ -7,13 +7,6 @@ import ScrollTrigger from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const navLinks = [
-  { name: 'Inicio', href: '#inicio' },
-  { name: 'Sobre mí', href: '#sobre-mi' },
-  { name: 'Servicios', href: '#servicios' },
-  { name: 'Proyectos', href: '#proyectos' },
-];
-
 const socialLinks = [
   { name: 'GitHub', href: 'https://github.com/elemike' },
   { name: 'LinkedIn', href: 'https://www.linkedin.com/in/michaelsct/' },
@@ -38,7 +31,7 @@ export default function Footer() {
       });
 
       // 2. Animación de la imagen panorámica
-      gsap.from('.footer-banner-image', {
+      gsap.from('.footer-banner-container', {
         scrollTrigger: {
           trigger: '.footer-banner-container',
           start: 'top 85%',
@@ -50,7 +43,7 @@ export default function Footer() {
         ease: 'power3.out',
       });
 
-      // 3. Barra inferior de navegación
+      // 3. Barra inferior
       gsap.from('.footer-bottom-nav', {
         scrollTrigger: {
           trigger: '.footer-bottom-nav',
@@ -91,7 +84,7 @@ export default function Footer() {
             {/* BOTÓN 1: CONTÁCTAME */}
             <a
               href="mailto:elemike2004@gmail.com"
-              className="inline-flex items-center gap-2 rounded-lg bg-[#001F54] px-6 py-3.5 font-mono text-xs font-bold  tracking-wider text-[#FFF8EB] shadow-md transition-all hover:bg-[#0A1128] hover:scale-105 active:scale-95 md:text-sm"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#001F54] px-6 py-3.5 font-mono text-xs font-bold tracking-wider text-[#FFF8EB] shadow-md transition-all hover:bg-[#0A1128] hover:scale-105 active:scale-95 md:text-sm"
             >
               <span>Contáctame</span>
               <svg
@@ -114,7 +107,7 @@ export default function Footer() {
               href="/cv.pdf"
               target="_blank"
               download
-              className="inline-flex items-center gap-2 rounded-lg bg-[#001F54]/10 px-6 py-3.5 font-mono text-xs font-bold  tracking-wider text-[#001F54] transition-all hover:bg-[#001F54]/20 hover:scale-105 active:scale-95 md:text-sm"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#001F54]/10 px-6 py-3.5 font-mono text-xs font-bold tracking-wider text-[#001F54] transition-all hover:bg-[#001F54]/20 hover:scale-105 active:scale-95 md:text-sm"
             >
               <span>Descargar CV</span>
               <svg
@@ -134,18 +127,18 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* IMAGEN PANORÁMICA AGTECH */}
-        <div className="footer-banner-container relative w-full aspect-[21/6] overflow-hidden rounded-xl bg-[#001F54]/10 shadow-sm">
+        {/* IMAGEN PANORÁMICA (Blanco y negro que recupera color al pasar el cursor o tocar) */}
+        <div className="footer-banner-container group relative w-full aspect-[21/6] overflow-hidden rounded-xl bg-[#001F54]/10 shadow-sm cursor-pointer">
           <Image
             src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=90&w=2000&auto=format&fit=crop"
             alt="AgTech Technology Banner"
             fill
-            className="footer-banner-image object-cover grayscale contrast-125 opacity-90"
+            className="footer-banner-image object-cover grayscale contrast-125 opacity-90 transition-all duration-700 ease-in-out group-hover:grayscale-0 group-hover:contrast-100 group-hover:opacity-100 group-active:grayscale-0"
             sizes="(max-width: 768px) 100vw, (max-width: 1280px) 90vw, 1280px"
           />
         </div>
 
-        {/* BARRA INFERIOR: ALINEADA EN EL CENTRO VERTICAL (items-center) */}
+        {/* BARRA INFERIOR DE REDES Y MARCA */}
         <div className="footer-bottom-nav flex flex-col items-center justify-between gap-6 pt-6 md:flex-row border-t border-[#001F54]/15">
           {/* NOMBRE / BRANDING */}
           <a
@@ -155,21 +148,8 @@ export default function Footer() {
             Michael Cruz
           </a>
 
-          {/* NAVEGACIÓN Y UBICACIÓN (CENTRADO VERTICAL Y HORIZONTAL) */}
-          <div className="flex flex-col items-center gap-1.5 font-mono text-xs font-bold tracking-widest text-[#034078]">
-            <nav className="flex flex-wrap items-center justify-center gap-6">
-              {navLinks.map((link, index) => (
-                <a
-                  key={index}
-                  href={link.href}
-                  className="transition-colors hover:text-[#0A1128]"
-                >
-                  {link.name}
-                </a>
-              ))}
-            </nav>
-
-            {/* UBICACIÓN Y MODALIDAD */}
+          {/* UBICACIÓN Y MODALIDAD */}
+          <div className="flex flex-col items-center font-mono text-xs font-bold tracking-widest text-[#034078]">
             <span className="text-[11px] font-medium tracking-wider text-[#034078]/80">
               Bogotá, Colombia • Remoto & On-site
             </span>

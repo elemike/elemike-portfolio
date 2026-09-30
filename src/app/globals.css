@@ -1,9 +1,13 @@
 @import "tailwindcss";
 
 @theme {
+  /* Breakpoint personalizado para Tailwind v4 */
+  --breakpoint-xs: 320px;
+
   --font-sans: var(--font-roboto), sans-serif;
   --font-mono: var(--font-roboto-mono), monospace;
 }
+
 :root {
   --paper: #ffffff;
   --ink: #333;

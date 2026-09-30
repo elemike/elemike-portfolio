@@ -1,11 +1,14 @@
 'use client';
 
-import { useLayoutEffect, useRef } from 'react';
+import { useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger, useGSAP);
+}
 
 const services = [
   {
@@ -13,7 +16,7 @@ const services = [
     category: 'Software & Web',
     title: 'Desarrollo Web / Desarrollo de Software',
     description:
-      'Soluciones digitales a medida diseñadas con arquitecturas sólidas y escalables (Clean Architecture), orientadas a resolver necesidades operativas reales y potenciar las ventas.',
+      'Soluciones digitales a medida diseñadas con arquitecturas sólidas y escalables, orientadas a resolver necesidades operativas reales y potenciar las ventas.',
     features: [
       'Aplicaciones web a medida (Full-Stack): sistemas de gestión, dashboards administrativos y portales internos.',
       'Plataformas e-commerce: tiendas integradas con catálogo, carrito y pasarelas de pago (Wompi, PayU).',
@@ -31,7 +34,7 @@ const services = [
     description:
       'Optimizamos la interacción con tus clientes y eliminamos tareas manuales repetitivas mediante la integración de agentes inteligentes, bots y conexión de sistemas.',
     features: [
-      'Bots de atención al cliente con IA (WhatsApp, Web): resolución de consultas frecuentes y reducción de carga en recepción (casos reales: clínicas odontológicas, repuestos de vehículos, barberías).',
+      'Bots de atención al cliente con IA (WhatsApp, Web): resolución de consultas frecuentes y reducción de carga en recepción.',
       'Automatización de agendamiento de citas y gestión de reservas.',
       'Gestión y organización de facturación: generación, ordenamiento y reportes automáticos.',
       'Integración entre sistemas: conexión de herramientas desarticuladas (APIs, procesos ETL) para eliminar trabajo manual.',
@@ -46,7 +49,7 @@ const services = [
     description:
       'Transformamos el campo mediante tecnología de precisión, captura de datos aéreos y visualización de métricas para la toma de decisiones estratégicas en cultivos.',
     features: [
-      'Monitoreo de cultivos con drones: mapeo de cobertura y detección visual de estrés vegetal (operación real con DJI Mini 3 Pro).',
+      'Monitoreo de cultivos con drones: mapeo de cobertura y detección visual de estrés vegetal.',
       'Reportes y dashboards para clientes agroindustriales: entrega de métricas claras y accionables sin exponer procesamiento interno.',
       'Diagnóstico inicial de campo: vuelo piloto + informe integral como punto de entrada de bajo compromiso.',
     ],
@@ -58,22 +61,23 @@ const services = [
 export default function ServicesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
+  useGSAP(
+    () => {
       // 1. Animación Encabezado
       gsap.from('.services-header', {
         scrollTrigger: {
           trigger: containerRef.current,
-          start: 'top 80%',
+          start: 'top 85%',
           once: true,
         },
         opacity: 0,
-        y: 30,
-        duration: 0.8,
+        y: 25,
+        duration: 0.7,
         ease: 'power3.out',
+        clearProps: 'all',
       });
 
-      // 2. Animación de tarjetas
+      // 2. Animación de tarjetas e imágenes Parallax
       const cards = gsap.utils.toArray<HTMLElement>('.service-card');
 
       cards.forEach((card) => {
@@ -85,13 +89,14 @@ export default function ServicesSection() {
           gsap.from(imageBox, {
             scrollTrigger: {
               trigger: card,
-              start: 'top 80%',
+              start: 'top 85%',
               once: true,
             },
             opacity: 0,
             y: 20,
-            duration: 1,
+            duration: 0.8,
             ease: 'power3.out',
+            clearProps: 'all',
           });
         }
 
@@ -99,13 +104,14 @@ export default function ServicesSection() {
           gsap.from(content, {
             scrollTrigger: {
               trigger: card,
-              start: 'top 75%',
+              start: 'top 80%',
               once: true,
             },
             opacity: 0,
             y: 30,
-            duration: 0.9,
+            duration: 0.8,
             ease: 'power3.out',
+            clearProps: 'all',
           });
         }
 
@@ -126,45 +132,44 @@ export default function ServicesSection() {
           );
         }
       });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
+    },
+    { scope: containerRef }
+  );
 
   return (
     <section
       ref={containerRef}
       id="servicios"
-      className="w-full py-20 select-none bg-[#FFF8EB]"
+      className="w-full pt-6 pb-12 sm:pt-8 sm:pb-16 select-none bg-[#FFF8EB] font-sans"
     >
       <div className="mx-auto max-w-7xl px-6 md:px-12">
         {/* HEADER DE LA SECCIÓN */}
-        <div className="services-header mb-12 flex flex-col items-start gap-2">
+        <div className="services-header mb-10 md:mb-16 flex flex-col items-start gap-2">
           <span className="font-mono text-sm font-bold uppercase tracking-[0.25em] text-[#034078]">
             SERVICIOS
           </span>
           <h2 className="text-4xl font-extrabold tracking-tight text-[#0A1128] sm:text-5xl md:text-6xl lg:text-7xl">
             Soluciones digitales a medida
           </h2>
-          <p className="mt-3 max-w-2xl text-base font-medium leading-relaxed text-[#034078] md:text-lg">
+          <p className="mt-2 max-w-2xl text-base font-medium leading-relaxed text-[#034078] md:text-lg">
             Desarrollo de software, automatización e IA diseñados para optimizar procesos y escalar tu negocio.
           </p>
         </div>
 
-        {/* BLOQUES DE SERVICIOS */}
-        <div className="flex flex-col gap-24 pt-8 md:gap-32">
+        {/* BLOQUES DE SERVICIOS ZIG-ZAG */}
+        <div className="flex flex-col gap-16 md:gap-24">
           {services.map((service, index) => {
             const isEven = index % 2 === 0;
 
             return (
               <div
                 key={service.id}
-                className={`service-card flex flex-col gap-10 md:items-center md:gap-16 ${
+                className={`service-card flex flex-col gap-8 md:items-center md:gap-16 ${
                   isEven ? 'md:flex-row' : 'md:flex-row-reverse'
                 }`}
               >
                 {/* IMAGEN ASPECTO 4:3 */}
-                <div className="service-image-box relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-[#001F54]/5 md:w-1/2">
+                <div className="service-image-box relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[#001F54]/5 md:w-1/2 shadow-sm">
                   <div className="parallax-img absolute -top-[10%] left-0 h-[120%] w-full">
                     <Image
                       src={service.image}
@@ -179,8 +184,7 @@ export default function ServicesSection() {
 
                 {/* CONTENIDO DE TEXTO */}
                 <div className="service-content flex w-full flex-col items-start gap-5 md:w-1/2">
-                  {/* CATEGORÍA (SIN NUMERACIÓN) */}
-                  <div className="font-mono text-xs font-bold  tracking-widest text-[#034078]">
+                  <div className="font-mono text-xs font-bold tracking-widest text-[#034078]">
                     <span>{service.category}</span>
                   </div>
 
@@ -192,12 +196,14 @@ export default function ServicesSection() {
                     {service.description}
                   </p>
 
-                  {/* BULLETS */}
+                  {/* BULLETS (LÍMITE A 3 EN MÓVIL) */}
                   <ul className="flex flex-col gap-2.5 pt-1">
                     {service.features.map((feature, fIndex) => (
                       <li
                         key={fIndex}
-                        className="flex items-start gap-3 text-sm font-medium leading-relaxed text-[#0A1128]/90 md:text-base"
+                        className={`items-start gap-3 text-sm font-medium leading-relaxed text-[#0A1128]/90 md:text-base ${
+                          fIndex >= 3 ? 'hidden sm:flex' : 'flex'
+                        }`}
                       >
                         <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#034078]" />
                         <span>{feature}</span>
@@ -205,26 +211,28 @@ export default function ServicesSection() {
                     ))}
                   </ul>
 
-                  {/* CTA / LINK */}
-                  <a
-                    href={service.link}
-                    className="group inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-widest text-[#001F54] transition-colors hover:text-[#034078] pt-3"
-                  >
-                    <span>Solicitar Servicio</span>
-                    <svg
-                      className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      viewBox="0 0 24 24"
+                  {/* BOTÓN SOLICITAR SERVICIO */}
+                  <div className="pt-2">
+                    <a
+                      href={service.link}
+                      className="group inline-flex items-center gap-2.5 rounded-xl bg-[#001F54] px-5 py-2.5 font-mono text-xs font-bold text-[#FFF8EB] shadow-md transition-all duration-200 hover:bg-[#034078] active:scale-[0.98]"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M13.5 4.5L21 12m0 0l-7.5-7.5M21 12H3"
-                      />
-                    </svg>
-                  </a>
+                      <span>Solicitar Servicio</span>
+                      <svg
+                        className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M7 17L17 7M17 7H7M17 7V17"
+                        />
+                      </svg>
+                    </a>
+                  </div>
                 </div>
               </div>
             );

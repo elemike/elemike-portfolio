@@ -42,7 +42,7 @@ export default function AboutStatsSection() {
         '.about-char',
         {
           opacity: 0,
-          y: 40,
+          y: 30,
           rotateX: -90,
           transformOrigin: '50% 100%',
         },
@@ -50,12 +50,12 @@ export default function AboutStatsSection() {
           opacity: 1,
           y: 0,
           rotateX: 0,
-          stagger: 0.015,
-          duration: 0.6,
+          stagger: 0.01,
+          duration: 0.5,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: '.about-text-container',
-            start: 'top 75%',
+            start: 'top 80%',
             once: true,
           },
         }
@@ -116,47 +116,58 @@ export default function AboutStatsSection() {
     return () => ctx.revert();
   }, []);
 
-  const splitTextToChars = (text: string) =>
-    text.split('').map((char, index) => (
-      <span
-        key={index}
-        className="about-char inline-block"
-        style={{ whiteSpace: char === ' ' ? 'pre' : 'normal' }}
-      >
-        {char}
+  // AGROUPA LETRAS EN PALABRAS INSEPARABLES
+  const splitTextToWordsAndChars = (text: string) => {
+    return text.split(' ').map((word, wIdx) => (
+      <span key={wIdx} className="inline-block whitespace-nowrap">
+        {word.split('').map((char, cIdx) => (
+          <span
+            key={cIdx}
+            className="about-char inline-block [will-change:transform,opacity]"
+          >
+            {char}
+          </span>
+        ))}
+        {/* Espacio entre palabras */}
+        <span className="inline-block">&nbsp;</span>
       </span>
     ));
+  };
 
   return (
     <section
       ref={containerRef}
       id="sobre-mi"
-      className="w-full py-20 select-none bg-[#FFF8EB] [perspective:1000px]"
+      className="w-full py-12 xs:py-16 sm:py-20 select-none bg-[#FFF8EB] [perspective:1000px]"
     >
-      <div className="mx-auto max-w-7xl px-6 md:px-12">
-        <div className="flex flex-col gap-16 md:gap-20">
-          {/* HEADER DE LA SECCIÓN (IDÉNTICO A TECH STACK Y SERVICIOS) */}
-          <div className="about-header flex flex-col items-start gap-2">
-            <span className="font-mono text-sm font-bold uppercase tracking-[0.25em] text-[#034078]">
+      <div className="mx-auto max-w-7xl px-4 xs:px-6 md:px-12">
+        <div className="flex flex-col gap-10 sm:gap-16 md:gap-20">
+          {/* HEADER DE LA SECCIÓN */}
+          <div className="about-header flex flex-col items-start gap-1 sm:gap-2">
+            <span className="font-mono text-xs sm:text-sm font-bold uppercase tracking-[0.25em] text-[#034078]">
               SOBRE MÍ
             </span>
-            <h2 className="text-4xl font-extrabold tracking-tight text-[#0A1128] sm:text-5xl md:text-6xl lg:text-7xl">
+            <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#0A1128] leading-tight">
               Pasión por el código y el impacto
             </h2>
           </div>
 
           {/* PÁRRAFOS ANIMADOS Y CTA */}
-          <div className="flex flex-col items-start gap-8">
-            <div className="about-text-container space-y-8 text-xl font-normal leading-relaxed text-[#0A1128] sm:text-2xl md:text-3xl md:leading-normal">
-              <p className="[perspective:1000px]">{splitTextToChars(paragraph1)}</p>
-              <p className="[perspective:1000px]">{splitTextToChars(paragraph2)}</p>
+          <div className="flex flex-col items-start gap-6 sm:gap-8">
+            <div className="about-text-container space-y-4 sm:space-y-8 text-base xs:text-lg sm:text-2xl md:text-3xl font-normal leading-relaxed text-[#0A1128] md:leading-normal">
+              <p className="[perspective:1000px]">
+                {splitTextToWordsAndChars(paragraph1)}
+              </p>
+              <p className="[perspective:1000px]">
+                {splitTextToWordsAndChars(paragraph2)}
+              </p>
             </div>
 
             {/* BOTÓN CTA */}
             <div className="about-cta pt-2">
               <a
                 href="#contacto"
-                className="inline-flex items-center gap-3 rounded-full bg-[#001F54] px-7 py-3.5 font-mono text-xs font-bold  tracking-wider text-[#FFF8EB] shadow-md transition-all hover:scale-105 hover:bg-[#0A1128] active:scale-95 md:text-sm"
+                className="inline-flex items-center gap-2.5 rounded-full bg-[#001F54] px-5 py-3 sm:px-7 sm:py-3.5 font-mono text-xs font-bold tracking-wider text-[#FFF8EB] shadow-md transition-all hover:scale-105 hover:bg-[#0A1128] active:scale-95 md:text-sm"
               >
                 <span>Más sobre mí</span>
                 <svg
@@ -177,10 +188,13 @@ export default function AboutStatsSection() {
           </div>
 
           {/* ESTADÍSTICAS */}
-          <div className="stats-container grid grid-cols-2 gap-y-12 gap-x-8 border-t border-[#001F54]/15 pt-16 sm:grid-cols-4 md:gap-x-12">
+          <div className="stats-container grid grid-cols-2 gap-y-8 gap-x-4 border-t border-[#001F54]/15 pt-10 sm:pt-16 sm:grid-cols-4 sm:gap-y-12 md:gap-x-12">
             {stats.map((stat, index) => (
-              <div key={index} className="stat-item flex flex-col items-start [perspective:1000px]">
-                <div className="flex items-baseline font-black text-5xl tracking-tight text-[#0A1128] sm:text-6xl md:text-7xl lg:text-8xl">
+              <div
+                key={index}
+                className="stat-item flex flex-col items-start [perspective:1000px]"
+              >
+                <div className="flex items-baseline font-black text-3xl xs:text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-[#0A1128]">
                   <span>{stat.prefix}</span>
                   <span
                     className="stat-number"
@@ -191,7 +205,7 @@ export default function AboutStatsSection() {
                   <span>{stat.displaySuffix || stat.suffix}</span>
                 </div>
 
-                <span className="mt-3 font-mono text-xs font-bold  tracking-widest text-[#034078] md:text-sm">
+                <span className="mt-2 sm:mt-3 font-mono text-[10px] xs:text-xs font-bold tracking-widest text-[#034078] md:text-sm">
                   {stat.label}
                 </span>
               </div>

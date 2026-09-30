@@ -8,7 +8,13 @@ import { useGSAP } from '@gsap/react';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
+  // Evita que GSAP recalcule y parpadee cuando la barra de la dirección web del móvil sube/baja
+  ScrollTrigger.config({ ignoreMobileResize: true });
 }
+
+// Movido fuera del componente: es un hook, no debe definirse dentro del render
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 interface Rect {
   left: number;
@@ -17,7 +23,6 @@ interface Rect {
   height: number;
 }
 
-// URLs de Unsplash optimizadas con formato WebP y ancho adecuado
 const PROJECTS = [
   {
     id: 'deskhub',
@@ -43,7 +48,7 @@ const PROJECTS = [
   },
   {
     id: 'cropmonitoring',
-    title: 'Monitereo de Cultivos',
+    title: 'Monitoreo de Cultivos',
     subtitle: 'AI + DRONES + AGRICULTURE',
     description:
       'Análisis de cultivos mediante imágenes aéreas con DJI Mini 3 Pro. Computer vision con YOLO para detectar anomalías, clasificar cultivos y generar análisis GIS con GeoTIFF.',
@@ -57,27 +62,46 @@ const PROJECTS = [
 function calculateRects(W: number, H: number) {
   if (W === 0 || H === 0) return null;
 
-  const PADX = W > 768 ? 48 : 16;
-  const HEADER = W > 768 ? 140 : 120;
-  const GAP = 20;
+  const isMobile = W < 768;
+  const PADX = isMobile ? 16 : 48;
+  const HEADER = isMobile ? 90 : 140;
+  const GAP = isMobile ? 12 : 20;
 
   const innerW = W - PADX * 2;
-  const innerH = H - HEADER - 30;
+  const innerH = H - HEADER - (isMobile ? 20 : 30);
 
-  const col1W = W > 768 ? innerW * 0.58 : innerW;
-  const col2W = W > 768 ? innerW * 0.42 - GAP : innerW;
-  const rowH = (innerH - GAP) / 2;
+  let bento: Rect[] = [];
 
-  const bento: Rect[] = [
-    { left: PADX, top: HEADER, width: col1W, height: innerH },
-    { left: PADX + col1W + GAP, top: HEADER, width: col2W, height: rowH },
-    {
-      left: PADX + col1W + GAP,
-      top: HEADER + rowH + GAP,
-      width: col2W,
-      height: rowH,
-    },
-  ];
+  if (isMobile) {
+    // Layout bento responsive para vertical/móvil
+    const cardH = (innerH - GAP * 2) / 3;
+    bento = [
+      { left: PADX, top: HEADER, width: innerW, height: cardH },
+      { left: PADX, top: HEADER + cardH + GAP, width: innerW, height: cardH },
+      {
+        left: PADX,
+        top: HEADER + (cardH + GAP) * 2,
+        width: innerW,
+        height: cardH,
+      },
+    ];
+  } else {
+    // Layout bento para escritorio
+    const col1W = innerW * 0.58;
+    const col2W = innerW * 0.42 - GAP;
+    const rowH = (innerH - GAP) / 2;
+
+    bento = [
+      { left: PADX, top: HEADER, width: col1W, height: innerH },
+      { left: PADX + col1W + GAP, top: HEADER, width: col2W, height: rowH },
+      {
+        left: PADX + col1W + GAP,
+        top: HEADER + rowH + GAP,
+        width: col2W,
+        height: rowH,
+      },
+    ];
+  }
 
   const full: Rect = { left: 0, top: 0, width: W, height: H };
 
@@ -95,27 +119,37 @@ export default function SelectedWork() {
     h: 0,
   });
 
-  const useIsomorphicLayoutEffect =
-    typeof window !== 'undefined' ? useLayoutEffect : useEffect;
-
   useIsomorphicLayoutEffect(() => {
     setDimensions({ w: window.innerWidth, h: window.innerHeight });
 
     const handleResize = () => {
-      setDimensions({ w: window.innerWidth, h: window.innerHeight });
+      setDimensions((prev) => {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        // Ignora cambios de altura pequeños (barra del navegador en móvil)
+        // para no destruir y recrear el pin innecesariamente
+        if (prev.w === w && Math.abs(prev.h - h) < 150) return prev;
+        return { w, h };
+      });
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const rects = calculateRects(dimensions.w, dimensions.h);
-
   useGSAP(
     () => {
       const outer = outerRef.current;
       const sticky = stickyRef.current;
-      if (!outer || !sticky || !rects) return;
+      if (!outer || !sticky || dimensions.w === 0) return;
+
+      // Normaliza el scroll en touch devices para evitar tirones
+      if (ScrollTrigger.isTouch === 1) {
+        ScrollTrigger.normalizeScroll(true);
+      }
+
+      const rects = calculateRects(dimensions.w, dimensions.h);
+      if (!rects) return;
 
       const cards = gsap.utils.toArray<HTMLElement>('.bento-card');
       const overlays = gsap.utils.toArray<HTMLElement>('.case-study-overlay');
@@ -124,11 +158,10 @@ export default function SelectedWork() {
 
       const { bento, full, H } = rects;
 
-      // Seleccionar el header y los indicadores para animar su visibilidad
       const header = sticky.querySelector('header');
       const uiControls = sticky.querySelectorAll('.ui-control');
 
-      // Posicionamiento inicial de las tarjetas bento
+      // Posicionamiento inicial seguro
       cards.forEach((card, i) => {
         gsap.set(card, {
           left: bento[i].left,
@@ -147,7 +180,6 @@ export default function SelectedWork() {
         const overlay = overlays[i];
         const preview = previews[i];
 
-        // 1. Expansión a pantalla completa (Aumentamos zIndex a 50 para cubrir la pantalla completa)
         tl.to(
           card,
           {
@@ -163,7 +195,6 @@ export default function SelectedWork() {
           i
         );
 
-        // Ocultar Header y Controles de la Interfaz durante la expansión
         tl.to(
           [header, ...Array.from(uiControls)],
           {
@@ -175,7 +206,6 @@ export default function SelectedWork() {
           i
         );
 
-        // Ocultar vista previa Bento
         tl.to(
           preview,
           {
@@ -186,20 +216,19 @@ export default function SelectedWork() {
           i
         );
 
-        // 2. Transición Overlay Caso de Estudio
         tl.fromTo(
           overlay,
           { opacity: 0, y: 30 },
           { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' },
           i + 0.35
         );
+
         tl.to(
           overlay,
           { opacity: 0, y: -20, duration: 0.25, ease: 'power2.in' },
           i + 0.7
         );
 
-        // 3. Atenuación de otras tarjetas
         cards.forEach((other, j) => {
           if (j === i) return;
           tl.to(other, { opacity: 0.1, duration: 0.25 }, i).to(
@@ -209,7 +238,6 @@ export default function SelectedWork() {
           );
         });
 
-        // 4. Reposicionamiento a celda Bento (Restaurar visibilidad del Header)
         if (i < STEPS - 1) {
           tl.to(
             card,
@@ -218,7 +246,7 @@ export default function SelectedWork() {
               top: bento[i].top,
               width: bento[i].width,
               height: bento[i].height,
-              borderRadius: '1.5rem',
+              borderRadius: dimensions.w < 768 ? '1rem' : '1.5rem',
               zIndex: 1,
               ease: 'power3.inOut',
               duration: 0.4,
@@ -226,7 +254,6 @@ export default function SelectedWork() {
             i + 0.8
           );
 
-          // Mostrar Header y Controles nuevamente
           tl.to(
             [header, ...Array.from(uiControls)],
             {
@@ -250,13 +277,14 @@ export default function SelectedWork() {
         }
       });
 
-      ScrollTrigger.create({
+      const st = ScrollTrigger.create({
         trigger: outer,
         start: 'top top',
         end: `+=${(STEPS + 0.6) * H}`,
         pin: sticky,
-        scrub: 1.0,
+        scrub: 0.8,
         invalidateOnRefresh: true,
+        refreshPriority: 1, // el pin se calcula primero, antes que las secciones de abajo
         onUpdate(self) {
           setHasScrolled(self.progress > 0.01);
 
@@ -271,20 +299,41 @@ export default function SelectedWork() {
           setActiveStep(step);
         },
       });
+
+      // Recalcula las secciones posteriores ahora que existe el pin-spacer
+      const raf = requestAnimationFrame(() => {
+        ScrollTrigger.sort();
+        ScrollTrigger.refresh();
+      });
+
+      return () => {
+        cancelAnimationFrame(raf);
+        st.kill();
+        tl.kill();
+        if (ScrollTrigger.isTouch === 1) {
+          ScrollTrigger.normalizeScroll(false);
+        }
+      };
     },
     { scope: outerRef, dependencies: [dimensions] }
   );
 
   return (
-    <section ref={outerRef} className="relative w-full bg-[#FFF8EB] text-[#0A1128] select-none">
-      <div ref={stickyRef} className="relative h-screen w-full overflow-hidden">
-        {/* ENCABEZADO */}
-        <header className="absolute top-0 left-0 right-0 z-40 flex items-end justify-between px-6 pt-8 pb-4 md:px-12 border-[#001F54]/15 bg-[#FFF8EB]/80 backdrop-blur-sm transition-opacity duration-300">
-          <div className="flex flex-col items-start gap-1">
-            <span className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-[#034078]">
+    <section
+      ref={outerRef}
+      className="relative w-full bg-[#FFF8EB] text-[#0A1128] select-none"
+    >
+      <div
+        ref={stickyRef}
+        className="relative h-screen w-full overflow-hidden"
+      >
+        {/* ENCABEZADO RESPONSIVE */}
+        <header className="absolute top-0 left-0 right-0 z-40 flex items-end justify-between px-4 pt-4 pb-3 md:px-12 md:pt-8 md:pb-4 border-[#001F54]/15 bg-[#FFF8EB]/80 backdrop-blur-sm transition-opacity duration-300">
+          <div className="flex flex-col items-start gap-0.5 md:gap-1">
+            <span className="font-mono text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-[#034078]">
               PORTAFOLIO
             </span>
-            <h2 className="text-2xl font-black tracking-tight text-[#0A1128] sm:text-3xl md:text-4xl">
+            <h2 className="text-xl font-black tracking-tight text-[#0A1128] sm:text-2xl md:text-4xl">
               Proyectos Destacados
             </h2>
           </div>
@@ -292,7 +341,7 @@ export default function SelectedWork() {
 
         {/* INDICADOR DE SCROLL */}
         <div
-          className={`ui-control absolute bottom-6 left-1/2 z-40 -translate-x-1/2 font-mono text-xs font-bold tracking-widest text-[#034078] transition-opacity duration-300 ${
+          className={`ui-control absolute bottom-4 md:bottom-6 left-1/2 z-40 -translate-x-1/2 font-mono text-[10px] md:text-xs font-bold tracking-widest text-[#034078] transition-opacity duration-300 ${
             hasScrolled ? 'opacity-0 pointer-events-none' : 'opacity-100'
           }`}
         >
@@ -300,99 +349,91 @@ export default function SelectedWork() {
         </div>
 
         {/* PUNTOS DE PROGRESO LATERALES */}
-        <div className="ui-control absolute right-6 top-1/2 z-40 flex -translate-y-1/2 flex-col gap-3">
+        <div className="ui-control absolute right-3 md:right-6 top-1/2 z-40 flex -translate-y-1/2 flex-col gap-2 md:gap-3">
           {PROJECTS.map((_, idx) => (
             <div
               key={idx}
-              className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
-                activeStep === idx ? 'bg-[#001F54] scale-125' : 'bg-[#001F54]/20'
+              className={`h-2 md:h-2.5 w-2 md:w-2.5 rounded-full transition-all duration-300 ${
+                activeStep === idx
+                  ? 'bg-[#001F54] scale-125'
+                  : 'bg-[#001F54]/20'
               }`}
             />
           ))}
         </div>
 
         {/* TARJETAS BENTO */}
-        {PROJECTS.map((project, idx) => {
-          const initialPos = rects?.bento[idx];
+        {PROJECTS.map((project, idx) => (
+          <article
+            key={project.id}
+            className="bento-card absolute overflow-hidden rounded-2xl md:rounded-3xl border border-neutral-900/10 bg-[#FFF8EB] shadow-2xl"
+            style={{
+              willChange: 'top, left, width, height, transform',
+            }}
+          >
+            {/* IMAGEN DE FONDO */}
+            <div className="absolute inset-0 z-0 overflow-hidden">
+              <Image
+                src={project.image}
+                alt={project.title}
+                fill
+                priority={idx === 0}
+                sizes="(max-width: 768px) 100vw, 60vw"
+                className="object-cover opacity-85 transition-transform duration-700 hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent md:bg-gradient-to-r md:from-black/80 md:via-black/40 md:to-transparent" />
+            </div>
 
-          return (
-            <article
-              key={project.id}
-              className="bento-card absolute overflow-hidden rounded-3xl border border-neutral-900/10 bg-[#FFF8EB] shadow-2xl"
-              style={{
-                left: initialPos ? `${initialPos.left}px` : '0px',
-                top: initialPos ? `${initialPos.top}px` : '0px',
-                width: initialPos ? `${initialPos.width}px` : '100%',
-                height: initialPos ? `${initialPos.height}px` : '100%',
-                willChange: 'top, left, width, height, transform',
-              }}
-            >
-              {/* IMAGEN DE FONDO CON NEXT/IMAGE */}
-              <div className="absolute inset-0 z-0 overflow-hidden">
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  priority={idx === 0} // La primera tarjeta se carga de inmediato para optimizar LCP
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 60vw, 50vw"
-                  className="object-cover opacity-85 transition-transform duration-700 hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent md:bg-gradient-to-r md:from-black/80 md:via-black/40 md:to-transparent" />
+            {/* VISTA PREVIA BENTO */}
+            <div className="bento-preview relative z-10 flex h-full flex-col justify-end p-4 md:p-6">
+              <div>
+                <h3 className="text-lg sm:text-2xl font-black tracking-tight text-[#FFF8EB] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] md:text-3xl">
+                  {project.title}
+                </h3>
+                <p className="mt-0.5 md:mt-1 font-mono text-[9px] md:text-[10px] font-bold tracking-wider text-[#81A4CD] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                  {project.subtitle}
+                </p>
               </div>
+            </div>
 
-              {/* VISTA PREVIA BENTO */}
-              <div className="bento-preview relative z-10 flex h-full flex-col justify-end p-6">
-                <div>
-                  <h3 className="text-2xl font-black tracking-tight text-[#FFF8EB] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] md:text-3xl">
-                    {project.title}
-                  </h3>
-                  <p className="mt-1 font-mono text-[10px] font-bold tracking-wider text-[#81A4CD] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-                    {project.subtitle}
-                  </p>
+            {/* OVERLAY CASO DE ESTUDIO */}
+            <div className="case-study-overlay pointer-events-none absolute inset-0 z-20 flex flex-col justify-end items-start p-4 md:p-16 text-left">
+              <div className="max-w-xl space-y-2 md:space-y-4 rounded-xl md:rounded-2xl border border-[#001F54]/15 bg-[#FFF8EB]/95 p-4 md:p-8 backdrop-blur-md shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)]">
+                <span
+                  className="inline-block rounded-full border border-[#001F54]/20 bg-[#FFF8EB] px-2.5 py-0.5 md:px-3.5 md:py-1 font-mono text-[9px] md:text-[11px] font-bold tracking-widest text-[#001F54]"
+                  style={{ borderColor: project.accent }}
+                >
+                  {project.subtitle}
+                </span>
+
+                <h3 className="text-2xl font-black tracking-tight text-[#0A1128] sm:text-3xl md:text-5xl">
+                  {project.title}
+                </h3>
+
+                <p className="text-[11px] leading-snug md:text-sm md:leading-relaxed text-[#034078] font-medium line-clamp-3 md:line-clamp-none">
+                  {project.description}
+                </p>
+
+                <div className="flex flex-wrap gap-1 md:gap-2 pt-0.5 md:pt-1">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-md border border-[#001F54]/10 bg-[#001F54]/5 px-2 py-0.5 font-mono text-[9px] md:text-[11px] font-semibold text-[#001F54]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="pt-1 md:pt-2">
+                  <button className="pointer-events-auto inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#001F54] px-4 py-2 md:px-6 md:py-2.5 font-mono text-[10px] md:text-xs font-bold tracking-wider text-[#FFF8EB] transition-transform hover:scale-105 hover:bg-[#0A1128] active:scale-95 shadow-xl">
+                    Ver caso de estudio →
+                  </button>
                 </div>
               </div>
-
-              {/* OVERLAY CASO DE ESTUDIO */}
-              <div className="case-study-overlay pointer-events-none absolute inset-0 z-20 flex flex-col justify-end items-start p-6 md:p-16 text-left">
-                <div className="max-w-xl space-y-4 rounded-2xl border border-[#001F54]/15 bg-[#FFF8EB]/95 p-6 md:p-8 backdrop-blur-md shadow-[0_25px_50px_-12px_rgba(0,0,0,0.8)]">
-                  <span
-                    className="inline-block rounded-full border border-[#001F54]/20 bg-[#FFF8EB] px-3.5 py-1 font-mono text-[11px] font-bold tracking-widest text-[#001F54]"
-                    style={{ borderColor: project.accent }}
-                  >
-                    {project.subtitle}
-                  </span>
-
-                  <h3 className="text-3xl font-black tracking-tight text-[#0A1128] md:text-5xl">
-                    {project.title}
-                  </h3>
-
-                  <p className="text-xs leading-relaxed text-[#034078] md:text-sm font-medium">
-                    {project.description}
-                  </p>
-
-                  {/* TAGS */}
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {project.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-md border border-[#001F54]/10 bg-[#001F54]/5 px-2.5 py-1 font-mono text-[11px] font-semibold text-[#001F54]"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* BOTÓN CTA */}
-                  <div className="pt-2">
-                    <button className="pointer-events-auto inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#001F54] px-6 py-2.5 font-mono text-xs font-bold tracking-wider text-[#FFF8EB] transition-transform hover:scale-105 hover:bg-[#0A1128] active:scale-95 shadow-xl">
-                      Ver caso de estudio →
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </article>
-          );
-        })}
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );
