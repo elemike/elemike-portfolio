@@ -24,8 +24,8 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://elemike.vercel.app/
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Michael Cruz | Full Stack Developer',
-    template: '%s | Michael Cruz', // Las subpáginas reemplazarán el %s
+    default: 'Michael Cruz | Full Stack Developer', // Título para la home si no hay subpágina
+    template: '%s | Michael Cruz', // Plantilla donde %s se reemplaza por el título de cada página
   },
   description:
     'Portafolio profesional de Michael Cruz. Especializado en desarrollo web full stack, arquitectura frontend y backend.',

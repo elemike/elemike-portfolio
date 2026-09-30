@@ -10,50 +10,67 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger, useGSAP);
 }
 
-const services = [
+interface Service {
+  id: string;
+  category: string;
+  title: string;
+  responseTime: string;
+  description: string;
+  features: string[];
+  image: string;
+  link: string;
+}
+
+const services: Service[] = [
   {
     id: '01',
     category: 'Software & Web',
-    title: 'Desarrollo Web / Desarrollo de Software',
+    title: 'Desarrollo Web y Software a Medida',
+    responseTime: 'Respuesta en < 24h',
     description:
-      'Soluciones digitales a medida diseñadas con arquitecturas sólidas y escalables, orientadas a resolver necesidades operativas reales y potenciar las ventas.',
+      'Construimos aplicaciones web personalizadas, portales corporativos y plataformas e-commerce diseñadas para optimizar tus operaciones y escalar ventas sin depender de licencias de terceros.',
     features: [
       'Aplicaciones web a medida (Full-Stack): sistemas de gestión, dashboards administrativos y portales internos.',
       'Plataformas e-commerce: tiendas integradas con catálogo, carrito y pasarelas de pago (Wompi, PayU).',
-      'Sistemas SaaS internos: control de inventario, reservas y automatización de flujos administrativos (DeskHub, Elite Flower).',
+      'Sistemas SaaS internos: control de inventario, reservas y automatización de flujos administrativos.',
       'Modernización de sistemas legados: migración de aplicaciones VB6/Access a tecnologías web actuales.',
       'Consultoría de arquitectura: revisión y optimización de código/arquitectura existente.',
     ],
-    image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=90&w=1920&auto=format&fit=crop',
+    image:
+      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=90&w=1920&auto=format&fit=crop',
     link: '#contacto',
   },
   {
     id: '02',
     category: 'Inteligencia Artificial & IA',
-    title: 'Automatización de Negocios',
+    title: 'Automatización e Integración de Procesos',
+    responseTime: 'Respuesta en < 12h',
     description:
-      'Optimizamos la interacción con tus clientes y eliminamos tareas manuales repetitivas mediante la integración de agentes inteligentes, bots y conexión de sistemas.',
+      'Implementamos agentes inteligentes en WhatsApp/Web y conectamos tus sistemas vía APIs para eliminar hasta el 80% del trabajo manual repetitivo y la atención al cliente tradicional.',
     features: [
       'Bots de atención al cliente con IA (WhatsApp, Web): resolución de consultas frecuentes y reducción de carga en recepción.',
       'Automatización de agendamiento de citas y gestión de reservas.',
       'Gestión y organización de facturación: generación, ordenamiento y reportes automáticos.',
       'Integración entre sistemas: conexión de herramientas desarticuladas (APIs, procesos ETL) para eliminar trabajo manual.',
     ],
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=90&w=1920&auto=format&fit=crop',
+    image:
+      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=90&w=1920&auto=format&fit=crop',
     link: '#contacto',
   },
   {
     id: '03',
     category: 'Agritech & Drones',
-    title: 'AgTech & Monitoreo Agrícola',
+    title: 'AgTech y Monitoreo Agrícola de Precisión',
+    responseTime: 'Respuesta en < 24h',
     description:
-      'Transformamos el campo mediante tecnología de precisión, captura de datos aéreos y visualización de métricas para la toma de decisiones estratégicas en cultivos.',
+      'Transformamos la toma de decisiones en el campo mediante mapeo aéreo con drones y dashboards de datos para evaluar el estrés vegetal y maximizar el rendimiento del cultivo.',
     features: [
       'Monitoreo de cultivos con drones: mapeo de cobertura y detección visual de estrés vegetal.',
       'Reportes y dashboards para clientes agroindustriales: entrega de métricas claras y accionables sin exponer procesamiento interno.',
       'Diagnóstico inicial de campo: vuelo piloto + informe integral como punto de entrada de bajo compromiso.',
     ],
-    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=90&w=1920&auto=format&fit=crop',
+    image:
+      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=90&w=1920&auto=format&fit=crop',
     link: '#contacto',
   },
 ];
@@ -63,7 +80,6 @@ export default function ServicesSection() {
 
   useGSAP(
     () => {
-      // Recalcular posiciones de ScrollTrigger tras renderizar
       ScrollTrigger.refresh();
 
       // 1. Animación Encabezado
@@ -161,7 +177,8 @@ export default function ServicesSection() {
             Soluciones digitales a medida
           </h2>
           <p className="mt-2 max-w-2xl text-base font-medium leading-relaxed text-[#034078] md:text-lg">
-            Desarrollo de software, automatización e IA diseñados para optimizar procesos y escalar tu negocio.
+            Desarrollo de software, automatización e IA diseñados para optimizar
+            procesos y escalar tu negocio.
           </p>
         </div>
 
@@ -193,19 +210,37 @@ export default function ServicesSection() {
 
                 {/* CONTENIDO DE TEXTO */}
                 <div className="service-content flex w-full flex-col items-start gap-5 md:w-1/2">
-                  <div className="font-mono text-xs font-bold tracking-widest text-[#034078]">
-                    <span>{service.category}</span>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="font-mono text-xs font-bold tracking-widest text-[#034078]">
+                      {service.category}
+                    </span>
+                    <span className="h-1 w-1 rounded-full bg-[#034078]/40" />
+                    {/* TIEMPO DE RESPUESTA */}
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#001F54]/5 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-[#001F54] border border-[#001F54]/10">
+                      <svg
+                        className="h-3 w-3 text-[#034078]"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path strokeLinecap="round" d="M12 6v6l4 2" />
+                      </svg>
+                      {service.responseTime}
+                    </span>
                   </div>
 
                   <h3 className="text-2xl font-black leading-tight text-[#0A1128] sm:text-3xl md:text-4xl">
                     {service.title}
                   </h3>
 
-                  <p className="text-base font-normal leading-relaxed text-[#0A1128]/80 md:text-lg">
+                  {/* PÁRRAFO PRINCIPAL OPTIMIZADO PARA INTENCIÓN + SÍNTESIS */}
+                  <p className="text-base font-medium leading-relaxed text-[#0A1128]/85 md:text-lg">
                     {service.description}
                   </p>
 
-                  {/* BULLETS (LÍMITE A 3 EN MÓVIL) */}
+                  {/* BULLETS */}
                   <ul className="flex flex-col gap-2.5 pt-1">
                     {service.features.map((feature, fIndex) => (
                       <li

@@ -27,9 +27,9 @@ const PROJECTS = [
   {
     id: 'deskhub',
     title: 'DeskHub',
-    subtitle: 'Workplace Management Platform',
+    subtitle: 'Gestión y Reserva de Espacios Corporativos',
     description:
-      'Plataforma para la gestión y reserva de espacios de oficina. Desarrollada con Angular y ASP.NET Core usando Clean Architecture, Entity Framework Core y control de concurrencia optimista.',
+      'Plataforma web empresarial para optimizar la gestión y reserva de espacios de trabajo en tiempo real. Desarrollada con Angular y ASP.NET Core aplicando Clean Architecture, Entity Framework Core y control de concurrencia optimista para garantizar operaciones sin interrupciones.',
     tags: ['Angular', 'ASP.NET Core', 'C#', 'SQL Server', 'Clean Architecture'],
     image:
       'https://images.unsplash.com/photo-1643114964010-8b077e281a50?auto=format&fit=crop&w=1400&q=80&fm=webp',
@@ -38,9 +38,9 @@ const PROJECTS = [
   {
     id: 'restauranthub',
     title: 'Restaurante La Ruda',
-    subtitle: 'Restaurante Management System',
+    subtitle: 'Sistema de Gestión Gastronómica Integral',
     description:
-      'Sistema integral para la gestión de restaurantes: pedidos, mesas, menús e inventario en tiempo real. API REST con NestJS y frontend reactivo en React con TypeScript.',
+      'Sistema web de gestión gastronómica orientado a la automatización de pedidos, control de mesas e inventarios en tiempo real. Construido con arquitectura de microservicios mediante API REST en NestJS y un frontend reactivo en React con TypeScript.',
     tags: ['React', 'NestJS', 'PostgreSQL', 'TypeScript', 'REST API'],
     image:
       'https://images.unsplash.com/photo-1531973968078-9bb02785f13d?auto=format&fit=crop&w=1400&q=80&fm=webp',
@@ -49,9 +49,9 @@ const PROJECTS = [
   {
     id: 'cropmonitoring',
     title: 'Monitoreo de Cultivos',
-    subtitle: 'AI + DRONES + AGRICULTURE',
+    subtitle: 'Visión por Computador e IA Agrícola',
     description:
-      'Análisis de cultivos mediante imágenes aéreas con DJI Mini 3 Pro. Computer vision con YOLO para detectar anomalías, clasificar cultivos y generar análisis GIS con GeoTIFF.',
+      'Sistema de analítica agrícola inteligente para la detección temprana de anomalías en cultivos mediante imágenes de drones DJI. Utiliza modelos de Visión por Computador con YOLO y procesamiento GIS en Python para optimizar el rendimiento del campo.',
     tags: ['Python', 'OpenCV', 'PyTorch', 'YOLO', 'Rasterio', 'GeoTIFF', 'GIS'],
     image:
       'https://images.unsplash.com/photo-1516822277566-bb38424a2b77?auto=format&fit=crop&w=1400&q=80&fm=webp',
@@ -334,7 +334,7 @@ export default function SelectedWork() {
               PORTAFOLIO
             </span>
             <h2 className="text-xl font-black tracking-tight text-[#0A1128] sm:text-2xl md:text-4xl">
-              Proyectos Destacados
+              Proyectos Destacados de Software
             </h2>
           </div>
         </header>

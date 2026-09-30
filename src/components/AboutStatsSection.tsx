@@ -16,11 +16,13 @@ const stats = [
 export default function AboutStatsSection() {
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Párrafo 1: Responde quién eres, qué construyes y cuál es el beneficio directo (software escalable/Clean Architecture).
   const paragraph1 =
-    'Desarrollador Full Stack con experiencia en el diseño y desarrollo de aplicaciones web robustas, escalables y orientadas a Clean Architecture. Apasionado por construir productos digitales eficientes, aplicando buenas prácticas de código y optimizando cada capa del sistema.';
+    'Ingeniero de Software Full Stack especializado en el desarrollo de aplicaciones web de alto rendimiento, escalables y estructuradas bajo Clean Architecture. Ayudo a empresas a transformar sus procesos mediante sistemas digitales robustos, código limpio y optimización en cada capa de la arquitectura.';
 
+  // Párrafo 2: Responde a la intención técnica de stack + innovación (Backend, Frontend e IA/Computer Vision).
   const paragraph2 =
-    'Mi enfoque combina el desarrollo backend sólido en ASP.NET Core y NestJS, con la creación de interfaces dinámicas e interactivas utilizando Angular, React y Next.js. Además, cuento con experiencia integrando modelos de Inteligencia Artificial y Visión por Computador para resolver problemas complejos mediante tecnología.';
+    'Mi stack principal abarca el desarrollo backend en ASP.NET Core y NestJS, combinado con interfaces modernas en Angular, React y Next.js. Además, integro modelos de Inteligencia Artificial y Visión por Computador para resolver desafíos operativos complejos con tecnología de vanguardia.';
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -116,7 +118,7 @@ export default function AboutStatsSection() {
     return () => ctx.revert();
   }, []);
 
-  // AGROUPA LETRAS EN PALABRAS INSEPARABLES
+  // AGRUPA LETRAS EN PALABRAS INSEPARABLES
   const splitTextToWordsAndChars = (text: string) => {
     return text.split(' ').map((word, wIdx) => (
       <span key={wIdx} className="inline-block whitespace-nowrap">
@@ -148,7 +150,7 @@ export default function AboutStatsSection() {
               SOBRE MÍ
             </span>
             <h2 className="text-2xl xs:text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-[#0A1128] leading-tight">
-              Pasión por el código y el impacto
+              Desarrollo de Software e Inteligencia Artificial
             </h2>
           </div>
 
@@ -169,7 +171,7 @@ export default function AboutStatsSection() {
                 href="#contacto"
                 className="inline-flex items-center gap-2.5 rounded-full bg-[#001F54] px-5 py-3 sm:px-7 sm:py-3.5 font-mono text-xs font-bold tracking-wider text-[#FFF8EB] shadow-md transition-all hover:scale-105 hover:bg-[#0A1128] active:scale-95 md:text-sm"
               >
-                <span>Más sobre mí</span>
+                <span>Trabajemos juntos</span>
                 <svg
                   className="h-4 w-4"
                   fill="none"
