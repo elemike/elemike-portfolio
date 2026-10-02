@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -9,11 +10,11 @@ if (typeof window !== 'undefined') {
 }
 
 const navItems = [
-  { name: 'Inicio', href: '#' },
-  { name: 'Sobre mí', href: '#sobre-mi' },
-  { name: 'Proyectos', href: '#proyectos' },
-  { name: 'Servicios', href: '#servicios' },
-  { name: 'Contacto', href: '#contacto' },
+  { name: 'Inicio', href: '/' },
+  { name: 'Sobre mí', href: '/sobre-mi' },
+  { name: 'Proyectos', href: '/proyectos' },
+  { name: 'Servicios', href: '/servicios' },
+  { name: 'Contacto', href: '/contacto' },
 ];
 
 export default function Navbar() {
@@ -37,7 +38,6 @@ export default function Navbar() {
         setScrolled(false);
       }
 
-      // Si el usuario hace scroll mientras el menú está abierto, se dispara la animación de cierre
       if (mobileMenuOpen) {
         closeMenu();
       }
@@ -47,7 +47,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [mobileMenuOpen]);
 
-  // Bloqueo del scroll del body mientras el menú está abierto
+  // Bloqueo del scroll del body mientras el menú móvil está abierto
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -65,7 +65,6 @@ export default function Navbar() {
     () => {
       const tl = gsap.timeline({ paused: true });
 
-      // 1. Transformación del Icono Hamburguesa a X
       tl.to(
         lineTopRef.current,
         {
@@ -84,7 +83,6 @@ export default function Navbar() {
         0
       );
 
-      // 2. Despliegue Suave del Menu Overlay
       tl.fromTo(
         menuRef.current,
         {
@@ -100,7 +98,6 @@ export default function Navbar() {
         0
       );
 
-      // 3. Entrada en Cascada (Stagger) de los Enlaces
       if (linksRef.current) {
         const links = linksRef.current.querySelectorAll('.mobile-link-item');
         tl.fromTo(
@@ -153,29 +150,29 @@ export default function Navbar() {
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 md:px-10">
         {/* LOGO / NOMBRE */}
-        <a
-          href="#"
+        <Link
+          href="/"
           className="relative z-50 font-mono text-base font-black tracking-widest text-[#FFF8EB] transition-colors hover:text-[#81A4CD]"
         >
           Michael Cruz<span className="text-[#81A4CD]">.</span>
-        </a>
+        </Link>
 
         {/* MENÚ DESKTOP */}
         <nav className="hidden items-center gap-8 lg:flex">
           {navItems.map((item, index) => (
-            <a
+            <Link
               key={index}
               href={item.href}
               className="font-mono text-xs font-bold tracking-widest text-[#FFF8EB]/80 transition-colors hover:text-[#81A4CD]"
             >
               {item.name}
-            </a>
+            </Link>
           ))}
         </nav>
 
         {/* BOTÓN CTA DESKTOP */}
-        <a
-          href="#contacto"
+        <Link
+          href="/contacto"
           className="group hidden items-center gap-2.5 rounded-xl bg-[#001F54] px-5 py-2.5 font-mono text-xs font-bold text-[#FFF8EB] shadow-md transition-all duration-200 hover:bg-[#81A4CD] hover:text-[#0A1128] active:scale-[0.98] lg:inline-flex"
         >
           <span>Contáctame</span>
@@ -192,7 +189,7 @@ export default function Navbar() {
               d="M7 17L17 7M17 7H7M17 7V17"
             />
           </svg>
-        </a>
+        </Link>
 
         {/* BOTÓN HAMBURGUESA MÓVIL / TABLET */}
         <button
@@ -206,19 +203,21 @@ export default function Navbar() {
               ref={lineTopRef}
               strokeWidth="2"
               strokeLinecap="round"
+              strokeLinejoin="round"
               d="M 4 8 L 20 8"
             />
             <path
               ref={lineBottomRef}
               strokeWidth="2"
               strokeLinecap="round"
+              strokeLinejoin="round"
               d="M 4 16 L 20 16"
             />
           </svg>
         </button>
       </div>
 
-      {/* MENÚ DESPLEGABLE CON MÁS ESPACIO Y PANTALLA COMPLETA FIXED */}
+      {/* MENÚ DESPLEGABLE MÓVIL */}
       <div
         ref={menuRef}
         className="fixed inset-0 z-40 flex h-dvh w-full flex-col justify-between bg-[#0A1128] px-8 pt-28 pb-10 text-[#FFF8EB] lg:hidden"
@@ -227,27 +226,26 @@ export default function Navbar() {
           visibility: 'hidden',
         }}
       >
-        {/* BLOQUE CENTRADO DE NAVEGACIÓN CON MAYOR ESPACIADO (gap-10) */}
         <div
           ref={linksRef}
           className="my-auto flex flex-col items-center justify-center gap-10 text-center"
         >
           {navItems.map((item, index) => (
-            <a
+            <Link
               key={index}
               href={item.href}
               onClick={closeMenu}
               className="mobile-link-item font-mono text-3xl font-extrabold tracking-wider text-[#FFF8EB] transition-colors hover:text-[#81A4CD] sm:text-4xl"
             >
               {item.name}
-            </a>
+            </Link>
           ))}
         </div>
 
-        {/* PIE DEL MENÚ */}
+        {/* PIE DEL MENÚ MÓVIL */}
         <div className="flex flex-col gap-5 border-t border-[#81A4CD]/15 pt-6">
-          <a
-            href="#contacto"
+          <Link
+            href="/contacto"
             onClick={closeMenu}
             className="group inline-flex items-center justify-center gap-2.5 rounded-xl bg-[#001F54] py-3.5 px-6 font-mono text-xs font-bold text-[#FFF8EB] shadow-md transition-all duration-200 active:scale-[0.98]"
           >
@@ -265,7 +263,7 @@ export default function Navbar() {
                 d="M7 17L17 7M17 7H7M17 7V17"
               />
             </svg>
-          </a>
+          </Link>
 
           <div className="flex justify-between font-mono text-[11px] text-[#FFF8EB]/50">
             <span>Michael Cruz</span>

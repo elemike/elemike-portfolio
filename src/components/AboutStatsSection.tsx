@@ -168,7 +168,7 @@ export default function AboutStatsSection() {
             {/* BOTÓN CTA */}
             <div className="about-cta pt-2">
               <a
-                href="#contacto"
+                href="/sobre-mi"
                 className="inline-flex items-center gap-2.5 rounded-full bg-[#001F54] px-5 py-3 sm:px-7 sm:py-3.5 font-mono text-xs font-bold tracking-wider text-[#FFF8EB] shadow-md transition-all hover:scale-105 hover:bg-[#0A1128] active:scale-95 md:text-sm"
               >
                 <span>Trabajemos juntos</span>
